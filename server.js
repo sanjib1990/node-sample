@@ -28,17 +28,18 @@ let PORT    = process.env.PORT || 8080;
 // Router
 let router  = new express.Router();
 
-// Middleware to be used by all request
+// Middleware to be used by all api request
 router.use((req, res, next) => {
-    console.log(req.method + ": " + req.url);
+    if (req.header("content-type") == "application/json" && req.header("accept") == "application/json") {
+        return next();
+    }
 
-    next();
+    return res.json({error: "Headers Missing"});
 });
 
-// Middleware to be used by views routes
+// Middleware to be used by all view request
 app.use((req, res, next) => {
     console.log(req.method + ": " + req.url);
-
     next();
 });
 
@@ -46,6 +47,28 @@ app.use((req, res, next) => {
 router.get("/test", (req, res) => {
     res.json({message: "Successfull"});
 });
+
+// Api Routes
+router
+    .route('/users')
+    .post((req, res, next) => {
+        if (! req.body.name) {
+            return res.send("No Body");
+        }
+
+        next();
+    }, (req, res) => {
+        let user    = new User();
+
+        user.name       = req.body.name;
+        user.address    = req.body.address;
+
+        user.save(err => {
+            if (err) res.send(err);
+
+            res.json(user);
+        });
+    });
 
 // ALl route will start with api/v1
 app.use("/api/v1", router);
