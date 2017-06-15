@@ -6,7 +6,7 @@ let express = require("express");
 let app = express();
 
 // assets
-app.use(express.static("public"))
+app.use(express.static("public"));
 
 app.get("/", function (req, res) {
     res.send("Helo there get");
@@ -35,4 +35,4 @@ let server  = app.listen(8080, function () {
     let port    = server.address().port;
 
     console.log("Server running at : http://%s:%s", host, port);
-})
+});
