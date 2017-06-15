@@ -26,44 +26,51 @@ app.use(reqParser.json());
 let PORT    = process.env.PORT || 8080;
 
 // Router
-let router  = express.Router();
+let router  = new express.Router();
 
 // Middleware to be used by all request
-router.use(function (req, res, next) {
+router.use((req, res, next) => {
+    console.log(req.method + ": " + req.url);
+
+    next();
+});
+
+// Middleware to be used by views routes
+app.use((req, res, next) => {
     console.log(req.method + ": " + req.url);
 
     next();
 });
 
 // Test route
-router.get("/test", function (req, res) {
+router.get("/test", (req, res) => {
     res.json({message: "Successfull"});
 });
 
 // ALl route will start with api/v1
 app.use("/api/v1", router);
 
-app.get("/", function (req, res) {
+app.get("/", (req, res) => {
     res.send("Helo there get");
 });
 
-app.post("/", function (req, res) {
+app.post("/", (req, res) => {
     res.send("Helo there post");
 });
 
-app.get("/test", function (req, res) {
+app.get("/test", (req, res) => {
     res.send("Helo there get test");
 });
 
-app.get("/test/*", function (req, res) {
+app.get("/test/*", (req, res) => {
     res.send("Helo there get test with pattern * " + req.url);
 });
 
-app.get("/form", function (req, res) {
+app.get("/form", (req, res) => {
     res.sendFile(__dirname + "/views/form.html");
 });
 
-app.get("/submit", function (req, res) {
+app.get("/submit", (req, res) => {
     let response = {
         first_name: req.query.first_name,
         last_name: req.query.last_name
@@ -71,11 +78,11 @@ app.get("/submit", function (req, res) {
     res.end(JSON.stringify(response));
 });
 
-app.get("/post-form", function (req, res) {
+app.get("/post-form", (req, res) => {
     res.sendFile(__dirname + "/views/post-form.html");
 });
 
-app.post("/post-submit", function (req, res) {
+app.post("/post-submit", (req, res) => {
     let response = {
         first_name: req.body.first_name,
         last_name: req.body.last_name
@@ -83,12 +90,12 @@ app.post("/post-submit", function (req, res) {
     res.end(JSON.stringify(response));
 });
 
-app.delete("/test/*", function (req, res) {
+app.delete("/test/*", (req, res) => {
     res.send("Helo there delete test with pattern * " + req.url);
 });
 
 // server setup.
-let server  = app.listen(PORT, function () {
+let server  = app.listen(PORT, () => {
     let host    = server.address().address;
     let port    = server.address().port;
 

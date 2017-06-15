@@ -7,7 +7,7 @@
 let http    = require("http");
 let mailer  = require("nodemailer");
 
-http.createServer(function (req, res) {
+http.createServer((req, res) => {
     let transporter = mailer.createTransport({
         host: 'smtp.gmail.com',
         port: 465,
@@ -25,7 +25,7 @@ http.createServer(function (req, res) {
         text: "Hey there"
     };
 
-    transporter.sendMail(mailOptions, function (err, info) {
+    transporter.sendMail(mailOptions, (err, info) => {
         if (err) {
             console.log(err);
         } else {

@@ -14,27 +14,27 @@ let urlEncodedParser    = reqParser.urlencoded({extended: false});
 // assets
 app.use(express.static("public"));
 
-app.get("/", function (req, res) {
+app.get("/", (req, res) => {
     res.send("Helo there get");
 });
 
-app.post("/", function (req, res) {
+app.post("/", (req, res) => {
     res.send("Helo there post");
 });
 
-app.get("/test", function (req, res) {
+app.get("/test", (req, res) => {
     res.send("Helo there get test");
 });
 
-app.get("/test/*", function (req, res) {
+app.get("/test/*", (req, res) => {
     res.send("Helo there get test with pattern * " + req.url);
 });
 
-app.get("/form", function (req, res) {
+app.get("/form", (req, res) => {
     res.sendFile(__dirname + "/views/form.html");
 });
 
-app.get("/submit", function (req, res) {
+app.get("/submit", (req, res) => {
     let response = {
         first_name: req.query.first_name,
         last_name: req.query.last_name
@@ -42,11 +42,11 @@ app.get("/submit", function (req, res) {
     res.end(JSON.stringify(response));
 });
 
-app.get("/post-form", function (req, res) {
+app.get("/post-form", (req, res) => {
     res.sendFile(__dirname + "/views/post-form.html");
 });
 
-app.post("/post-submit", urlEncodedParser, function (req, res) {
+app.post("/post-submit", urlEncodedParser, (req, res) => {
     let response = {
         first_name: req.body.first_name,
         last_name: req.body.last_name
@@ -54,12 +54,12 @@ app.post("/post-submit", urlEncodedParser, function (req, res) {
     res.end(JSON.stringify(response));
 });
 
-app.delete("/test/*", function (req, res) {
+app.delete("/test/*", (req, res) => {
     res.send("Helo there delete test with pattern * " + req.url);
 });
 
 // server setup.
-let server  = app.listen(8080, function () {
+let server  = app.listen(8080, () => {
     let host    = server.address().address;
     let port    = server.address().port;
 

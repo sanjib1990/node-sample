@@ -10,18 +10,18 @@ app.use(express.static('public'));
 app.use(bodyParser.urlencoded({ extended: false }));
 
 // Routes
-app.get('/upload', function (req, res) {
+app.get('/upload', (req, res) => {
     res.sendFile( __dirname + "/views/upload.html" );
 });
 
-app.post('/upload', upload.single('file'), function (req, res) {
+app.post('/upload', upload.single('file'), (req, res) => {
     console.log(req.file.originalname);
     console.log(req.file.path);
     console.log(req.file.mimetype);
     let file = __dirname + "/public/img/" + req.file.originalname;
 
-    fs.readFile( req.file.path, function (err, data) {
-        fs.writeFile(file, data, function (err) {
+    fs.readFile( req.file.path, (err, data) => {
+        fs.writeFile(file, data, err => {
             if ( err ) {
                 console.log( err );
                 return  res.end( JSON.stringify({error: "Something went wrong"}));
@@ -39,7 +39,7 @@ app.post('/upload', upload.single('file'), function (req, res) {
 
 
 // Server
-let server = app.listen(8080, function () {
+let server = app.listen(8080, () => {
     let host = server.address().address;
     let port = server.address().port;
 

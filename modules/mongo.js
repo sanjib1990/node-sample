@@ -1,7 +1,7 @@
 let mongo   = require("mongodb");
 let url     = "mongodb://localhost:27017/mydb";
 
-mongo.connect(url, function (err, db) {
+mongo.connect(url, (err, db) => {
     if (err) throw err;
 
     console.log("Database Created");
@@ -9,7 +9,7 @@ mongo.connect(url, function (err, db) {
     db.collection("users").insertMany([
         { name: 'John', address: 'Highway 71'},
         { name: 'Peter', address: 'Lowstreet 4'}
-    ], function (err, res) {
+    ], (err, res) => {
         if (err) throw err;
 
         console.log(res);
@@ -17,12 +17,12 @@ mongo.connect(url, function (err, db) {
         db.close();
     });
 
-    db.collection("users").findOne({}, function (err, res) {
+    db.collection("users").findOne({}, (err, res) => {
         console.log(res.name);
         db.close();
     });
 
-    db.collection("users").find({}).toArray(function (err, res) {
+    db.collection("users").find({}).toArray((err, res) => {
         if (err) throw err;
 
         console.log(res);

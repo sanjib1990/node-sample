@@ -7,10 +7,10 @@ let con     = mysql.createConnection({
     database: "capillary"
 });
 
-con.connect(function (err) {
+con.connect(err => {
     if (err) throw err;
 
-    con.query("SELECT * FROM notes", function (err, result) {
+    con.query("SELECT * FROM notes", (err, result) => {
         if (err) throw err;
 
         console.log(result[2].cookie_id);

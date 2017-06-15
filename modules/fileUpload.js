@@ -8,12 +8,12 @@ let http    = require("http");
 let form    = require("formidable");
 let fs      = require("fs");
 
-http.createServer(function (req, res) {
+http.createServer((req, res) => {
     if (req.url == '/fileupload') {
         let input   = new form.IncomingForm();
 
-        input.parse(req, function (err, fields, files) {
-            fs.rename(files.file.path, "./" + files.file.name, function (err) {
+        input.parse(req, (err, fields, files) => {
+            fs.rename(files.file.path, "./" + files.file.name, err => {
                 if (err) throw err;
 
                 res.writeHead(200, {'Content-Type': 'text/html'});
@@ -22,7 +22,7 @@ http.createServer(function (req, res) {
             });
         });
     } else {
-        fs.readFile("new.html", function (err, data) {
+        fs.readFile("new.html", (err, data) => {
             res.writeHead(200, {'Content-Type': 'text/html'});
             res.write(data);
             res.end();
