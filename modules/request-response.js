@@ -2,46 +2,17 @@
 
 let express = require("express");
 
-// Initialize the body parser
-let reqParser   = require("body-parser");
-
-//initialize mongoose
-let mongoose    = require("mongoose");
-
-// Include the user model
-let User    = require("./app/models/user");
-
 // initialize the express framework
 let app = express();
 
-// create connection to mongo db.
-mongoose.connect("mongodb://localhost:27017/mydb");
+// Initialize the body parser
+let reqParser   = require("body-parser");
 
-// basic setups
+// Create application/x-www-form-urlencoded parser
+let urlEncodedParser    = reqParser.urlencoded({extended: false});
+
+// assets
 app.use(express.static("public"));
-app.use(reqParser.urlencoded({extended: false}));
-app.use(reqParser.json());
-
-// port
-let PORT    = process.env.PORT || 8080;
-
-// Router
-let router  = express.Router();
-
-// Middleware to be used by all request
-router.use(function (req, res, next) {
-    console.log(req.method + ": " + req.url);
-
-    next();
-});
-
-// Test route
-router.get("/test", function (req, res) {
-    res.json({message: "Successfull"});
-});
-
-// ALl route will start with api/v1
-app.use("/api/v1", router);
 
 app.get("/", function (req, res) {
     res.send("Helo there get");
@@ -75,7 +46,7 @@ app.get("/post-form", function (req, res) {
     res.sendFile(__dirname + "/views/post-form.html");
 });
 
-app.post("/post-submit", function (req, res) {
+app.post("/post-submit", urlEncodedParser, function (req, res) {
     let response = {
         first_name: req.body.first_name,
         last_name: req.body.last_name
@@ -88,7 +59,7 @@ app.delete("/test/*", function (req, res) {
 });
 
 // server setup.
-let server  = app.listen(PORT, function () {
+let server  = app.listen(8080, function () {
     let host    = server.address().address;
     let port    = server.address().port;
 
