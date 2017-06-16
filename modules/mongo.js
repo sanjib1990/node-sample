@@ -1,5 +1,5 @@
 let mongo   = require("mongodb");
-let url     = "mongodb://localhost:27017/mydb";
+let url     = `mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`;
 
 mongo.connect(url, (err, db) => {
     if (err) throw err;
