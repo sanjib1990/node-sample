@@ -30,7 +30,7 @@ let router  = new express.Router();
 
 // Middleware to be used by all api request
 router.use((req, res, next) => {
-    if (req.header("content-type") == "application/json" && req.header("accept") == "application/json") {
+    if (req.header("content-type") === "application/json" && req.header("accept") === "application/json") {
         return next();
     }
 
