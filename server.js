@@ -1,25 +1,22 @@
-"use strict";
+import express from "express";
+import {load} from "dotenv-safe";
+import jsend from "./modules/jsend";
+import reqParser from "body-parser";
+import mongoose from "mongoose";
+import bluebird from "bluebird";
+import User from "./app/models/user";
+import v2User from "./app/models/v2/user";
+
+require("./bootstrap/boot");
 
 // Load the env
-require("dotenv-safe").load();
-
-let express = require("express");
+load();
 
 // Initialize JSend Standard response.
-let jsend   = require("./modules/jsend");
 jsend.init();
 
-// Initialize the body parser
-let reqParser   = require("body-parser");
-
-//initialize mongoose
-let mongoose    = require("mongoose");
-
 // Add custom promise for mongoose
-mongoose.Promise    = require("bluebird");
-
-// Include the user model
-let User    = require("./app/models/user");
+mongoose.Promise    = bluebird;
 
 // initialize the express framework
 let app = express();
@@ -53,8 +50,8 @@ app.use((req, res, next) => {
     next();
 });
 
-// ALl route will start with api/v1
-app.use("/api/v1", router);
+// ALl route will start with api
+app.use("/api", router);
 app.use(apiErrorHandler);
 
 // Test route
@@ -62,9 +59,9 @@ router.get("/test", (req, res) => {
     res.json({message: "Successfull"});
 });
 
-// Api Routes
+// Api Routes using mongo db
 router
-    .route('/users')
+    .route('/v1/users')
     .post((req, res, next) => {
         if (! req.body.name) {
             return res.send("No Body");
@@ -128,7 +125,7 @@ function userByIdMiddleware (req, res, next) {
 }
 
 router
-    .route("/users/:user_id")
+    .route("/v1/users/:user_id")
     .get(userByIdMiddleware, (req, res) => {
         res.jsend(req.user, "Successfully Requested");
     })
@@ -156,6 +153,24 @@ router
         });
     });
 
+router
+    .route("/v2/users")
+    .get((req, res) => {
+        v2User
+            .build({
+                name: req.body.name,
+                address: req.body.address
+            })
+            .save()
+            .then((data) => {
+                return res.jsend(data, "Success", 201);
+            })
+            .catch(err => {
+                return apiErrorHandler(err, req, res);
+            });
+    });
+
+// Routes with views
 app.get("/", (req, res) => {
     res.send("Helo there get");
 });
