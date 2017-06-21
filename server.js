@@ -1,9 +1,9 @@
 import express from "express";
-import {load} from "dotenv-safe";
-import jsend from "./modules/jsend";
-import reqParser from "body-parser";
-import mongoose from "mongoose";
 import bluebird from "bluebird";
+import mongoose from "mongoose";
+import {load} from "dotenv-safe";
+import reqParser from "body-parser";
+import jsend from "./modules/jsend";
 import User from "./app/models/user";
 import v2User from "./app/models/v2/user";
 
