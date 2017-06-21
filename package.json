@@ -23,6 +23,7 @@
     "cookie-parser": "^1.4.3",
     "dotenv-safe": "^4.0.4",
     "express": "^4.15.3",
+    "express-validator": "^3.2.0",
     "formidable": "^1.1.1",
     "mongodb": "^2.2.28",
     "mongoose": "^4.10.6",

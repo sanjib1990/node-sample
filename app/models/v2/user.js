@@ -26,7 +26,7 @@ const User  = sql.orm.define("users", {
     ]
 });
 
-User.sync({force: true}).then((success, reject) => {
+User.sync().then((success, reject) => {
    if (reject) throw Error(reject);
 
    console.log("Success in sync with User");

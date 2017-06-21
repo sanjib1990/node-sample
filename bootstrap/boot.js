@@ -2,4 +2,8 @@
  * Created by sanjibdevnath on 20/6/17.
  */
 
-// __baseDir   = __dirname + "/../";
+import helpers from "./helpers";
+
+module.exports  = {
+    helpers: helpers
+};

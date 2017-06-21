@@ -1,4 +1,5 @@
 import express from "express";
+import orm from "./modules/ORM";
 import bluebird from "bluebird";
 import mongoose from "mongoose";
 import {load} from "dotenv-safe";
@@ -6,8 +7,8 @@ import reqParser from "body-parser";
 import jsend from "./modules/jsend";
 import User from "./app/models/user";
 import v2User from "./app/models/v2/user";
-
-require("./bootstrap/boot");
+import validator from "express-validator";
+import {helpers} from "./bootstrap/boot";
 
 // Load the env
 load();
@@ -28,6 +29,7 @@ mongoose.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/
 app.use(express.static("public"));
 app.use(reqParser.urlencoded({extended: false}));
 app.use(reqParser.json());
+app.use(validator());
 
 // port
 let PORT    = process.env.PORT || 8080;
@@ -157,18 +159,55 @@ router
     .route("/v2/users")
     .get((req, res) => {
         v2User
+            .all()
+            .then((data) => {
+                return res.jsend(data, "Successfully Requested");
+            })
+            .catch(err => {
+                return apiErrorHandler(err, req, res);
+            });
+    })
+    .post(userRequest, (req, res) => {
+        v2User
             .build({
                 name: req.body.name,
                 address: req.body.address
             })
             .save()
             .then((data) => {
-                return res.jsend(data, "Success", 201);
+                return res.jsend(data, "Successfully Requested", 201);
+            })
+            .catch(orm.Sequelize.ValidationError, err => {
+                return invalidInputHandler(req, res, err.errors[0])
             })
             .catch(err => {
                 return apiErrorHandler(err, req, res);
             });
     });
+
+/**
+ * User request handler.
+ *
+ * @param req
+ * @param res
+ * @param next
+ */
+function userRequest(req, res, next) {
+    req
+        .checkBody("name")
+        .notEmpty().withMessage("Name is required");
+    req
+        .checkBody("address")
+        .notEmpty().withMessage("Address is required");
+
+    req.getValidationResult().then(result => {
+        if (! result.isEmpty()) {
+            return invalidInputHandler(req, res, result.mapped());
+        }
+
+        return next();
+    });
+}
 
 // Routes with views
 app.get("/", (req, res) => {
@@ -236,6 +275,23 @@ function apiErrorHandler(err, req, res, next) {
 }
 
 /**
+ * Invalid input handler.
+ *
+ * @param req
+ * @param res
+ * @param validation
+ * @returns {*}
+ */
+function invalidInputHandler(req, res, validation) {
+    let err = new Error();
+    err.status  = 400;
+    err.message = "Validation Error";
+    err.validation  = validation;
+
+    return apiErrorHandler(err, req, res);
+}
+
+/**
  * Get debug info based on env.
  *
  * @param err
@@ -246,7 +302,7 @@ function apiErrorHandler(err, req, res, next) {
 function getDebugInfo(err, req, res) {
     let data    = {};
 
-    data.validation = [];
+    data.validation = err.validation ? err.validation :[];
     if (process.env.APP_ENV === "prod") {
         return data;
     }
@@ -273,4 +329,11 @@ let server  = app.listen(PORT, () => {
     let port    = server.address().port;
 
     console.log("Server running at : http://%s:%s", host, port);
+});
+
+/**
+ * Unhandled exception handler.
+ */
+process.on("Unhandled", function (err, req, res) {
+    return apiErrorHandler(err, req, res);
 });
