@@ -159,7 +159,9 @@ router
     .route("/v2/users")
     .get((req, res) => {
         v2User
-            .all()
+            .all({
+                attributes: ['id', 'name', 'address']
+            })
             .then((data) => {
                 return res.jsend(data, "Successfully Requested");
             })
@@ -178,12 +180,32 @@ router
                 return res.jsend(data, "Successfully Requested", 201);
             })
             .catch(orm.Sequelize.ValidationError, err => {
-                return invalidInputHandler(req, res, err.errors[0])
+                return sequlizeValidationErrors(req, res, err)
             })
             .catch(err => {
                 return apiErrorHandler(err, req, res);
             });
     });
+
+/**
+ * Handle Sequlize validation errors.
+ *
+ * @param req
+ * @param res
+ * @param err
+ * @returns {*}
+ */
+function sequlizeValidationErrors(req, res, err) {
+    let errors  = {};
+
+    errors[err.errors[0].path]  = {
+        param   : err.errors[0].path,
+        msg     : err.errors[0].message,
+        value   : err.errors[0].value
+    };
+
+    return invalidInputHandler(req, res, errors)
+}
 
 /**
  * User request handler.
@@ -303,13 +325,13 @@ function getDebugInfo(err, req, res) {
     let data    = {};
 
     data.validation = err.validation ? err.validation :[];
-    if (process.env.APP_ENV === "prod") {
+    if (process.env.NODE_ENV === "prod") {
         return data;
     }
 
 
     data.debug  = {
-        realm: process.env.APP_ENV,
+        realm: process.env.NODE_ENV,
         stack: err.stack.split("\n").map(e => e.trim())
     };
 
