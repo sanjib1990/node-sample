@@ -1,3 +1,5 @@
+import fs from "fs";
+import path from "path";
 import express from "express";
 import orm from "./modules/ORM";
 import bluebird from "bluebird";
@@ -22,17 +24,23 @@ mongoose.Promise    = bluebird;
 // initialize the express framework
 let app = express();
 
+let config_path     = path.join(__dirname, "/config/");
+let databaseConfig  = require(path.join(config_path, "database.js"));
+
 // create connection to mongo db.
-mongoose.connect(`mongodb://${process.env.MONGO_HOST}:${process.env.MONGO_PORT}/${process.env.MONGO_DATABASE}`);
+mongoose.connect(databaseConfig.connections.mongo.url);
+
+let mysqlConfig = databaseConfig.connections[process.env.DB_CONNECTION];
+
+fs.writeFile(path.join(config_path, "database.json"), JSON.stringify(mysqlConfig), err => {
+    if (err) throw err;
+});
 
 // basic setups
 app.use(express.static("public"));
 app.use(reqParser.urlencoded({extended: false}));
 app.use(reqParser.json());
 app.use(validator());
-
-// port
-let PORT    = process.env.PORT || 8080;
 
 // Router
 let router  = new express.Router();
@@ -345,17 +353,11 @@ function getDebugInfo(err, req, res) {
     return data;
 }
 
-// server setup.
-let server  = app.listen(PORT, () => {
-    let host    = server.address().address;
-    let port    = server.address().port;
-
-    console.log("Server running at : http://%s:%s", host, port);
-});
-
 /**
  * Unhandled exception handler.
  */
 process.on("Unhandled", function (err, req, res) {
     return apiErrorHandler(err, req, res);
 });
+
+module.exports  = app;

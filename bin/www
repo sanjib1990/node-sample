@@ -1,0 +1,15 @@
+/**
+ * Created by sanjibdevnath on 22/6/17.
+ */
+import app from "./../server";
+
+ // port
+ let PORT    = process.env.PORT || 8080;
+
+ // server setup.
+ let server  = app.listen(PORT, () => {
+     let host    = server.address().address;
+     let port    = server.address().port;
+
+     console.log("Server running at : http://%s:%s", host, port);
+ });

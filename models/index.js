@@ -2,18 +2,15 @@ import fs from "fs";
 import path from "path";
 import Sequelize from "sequelize";
 
-'use strict';
+"use strict";
 
+let config_path = path.join(__dirname, "/../config/");
 let basename  = path.basename(module.filename);
-let env       = process.env.NODE_ENV || 'development';
-let config    = require(__dirname + '/../config/config.json')[env];
+let env       = process.env.NODE_ENV || "local";
+let config    = require(path.join(config_path, "database.json"));
 let db        = {};
 
-if (config.use_env_variable) {
-  let sequelize = new Sequelize(process.env[config.use_env_variable]);
-} else {
-  let sequelize = new Sequelize(config.database, config.username, config.password, config);
-}
+let sequelize = new Sequelize(config.database, config.username, config.password, config);
 
 fs
   .readdirSync(__dirname)
