@@ -3,8 +3,8 @@ engines:
    enabled: true
    config:
     languages:
-    - javascript:
-      mass_threshold: 200
+      javascript:
+        mass_threshold: 200
 ratings:
  paths:
  - app/**
