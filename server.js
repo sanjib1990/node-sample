@@ -246,13 +246,15 @@ function userRequest(req, res, next) {
         .checkBody("address")
         .notEmpty().withMessage("Address is required");
 
-    req.getValidationResult().then(result => {
-        if (! result.isEmpty()) {
-            return invalidInputHandler(req, res, result.mapped());
-        }
+    req
+        .getValidationResult()
+        .then(result => {
+            if (! result.isEmpty()) {
+                return invalidInputHandler(req, res, result.mapped());
+            }
 
-        return next();
-    });
+            return next();
+        });
 }
 
 // Routes with views
