@@ -4,6 +4,7 @@ engines:
    config:
     languages:
     - javascript:
+      mass_threshold: 200
 ratings:
  paths:
  - app/**
