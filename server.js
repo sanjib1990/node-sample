@@ -121,7 +121,7 @@ function userByIdMiddleware (req, res, next) {
             }
 
             req.user    = user;
-            console.log("Valid");
+
             return next();
         });
 
@@ -189,6 +189,22 @@ router
             })
             .catch(orm.Sequelize.ValidationError, err => {
                 return sequlizeValidationErrors(req, res, err)
+            })
+            .catch(err => {
+                return apiErrorHandler(err, req, res);
+            });
+    });
+
+router
+    .route("/v2/users/:user_id")
+    .get((req, res) => {
+        v2User
+            .findOne({
+                where       : {id: req.params.user_id},
+                attributes  : ['id', 'name', 'address']
+            })
+            .then((data) => {
+                return res.jsend(data, "Successfully Requested");
             })
             .catch(err => {
                 return apiErrorHandler(err, req, res);

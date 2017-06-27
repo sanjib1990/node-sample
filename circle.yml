@@ -1,0 +1,17 @@
+machine:
+  build:
+    version: ubuntu-14.04-XXL-upstart-1189-5614f37
+
+  environment:
+      CIRCLE_ENV: test
+
+  node:
+    version: v6.1.0
+
+dependencies:
+  pre:
+    - cp .env.testing .env
+
+test:
+  override:
+    - npm run test
