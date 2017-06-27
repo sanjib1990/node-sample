@@ -1,6 +1,9 @@
 engines:
  duplication:
-   enabled: false
+   enabled: true
+   config:
+    languages:
+    - javascript:
 ratings:
  paths:
  - app/**
