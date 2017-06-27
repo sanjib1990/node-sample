@@ -24,7 +24,7 @@ mongoose.Promise    = bluebird;
 // initialize the express framework
 let app = express();
 
-let config_path     = path.join(__dirname, "/config/");
+let config_path     = path.join(.codeclimate.ymlname, "/config/");
 let databaseConfig  = require(path.join(config_path, "database.js"));
 
 // create connection to mongo db.
