@@ -1,0 +1,11 @@
+engines:
+ duplication:
+   enabled: false
+ratings:
+ paths:
+ - app/**
+ - bin/**
+ - "**.js"
+exclude_paths:
+- node_modules/**
+- tests/**
