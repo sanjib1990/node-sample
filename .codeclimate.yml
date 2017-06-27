@@ -5,3 +5,7 @@ engines:
       languages:
         javascript:
           mass_threshold: 200
+
+  ratings:
+     paths:
+     - "./**/*.js"
