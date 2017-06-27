@@ -8,4 +8,4 @@ engines:
 
   ratings:
      paths:
-     - "./**/*.js"
+     - "**.js"
