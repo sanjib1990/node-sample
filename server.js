@@ -273,7 +273,7 @@ app.get("/test/*", (req, res) => {
 });
 
 app.get("/form", (req, res) => {
-    res.sendFile(__dirname + "/views/form.html");
+    res.sendFile(path.join(__dirname, "/views/form.html"));
 });
 
 app.get("/submit", (req, res) => {
@@ -285,7 +285,7 @@ app.get("/submit", (req, res) => {
 });
 
 app.get("/post-form", (req, res) => {
-    res.sendFile(__dirname + "/views/post-form.html");
+    res.sendFile(path.join(__dirname, "/views/post-form.html"));
 });
 
 app.post("/post-submit", (req, res) => {
