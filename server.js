@@ -23,6 +23,7 @@ mongoose.Promise    = bluebird;
 
 // initialize the express framework
 let app = express();
+let cors    = require("cors");
 
 let config_path     = path.join(__dirname, "/config/");
 let databaseConfig  = require(path.join(config_path, "database.js"));
@@ -37,6 +38,7 @@ fs.writeFile(path.join(config_path, "database.json"), JSON.stringify(mysqlConfig
 });
 
 // basic setups
+app.use(cors());
 app.use(express.static("public"));
 app.use(reqParser.urlencoded({extended: false}));
 app.use(reqParser.json());
@@ -47,7 +49,8 @@ let router  = new express.Router();
 
 // Middleware to be used by all api request
 router.use((req, res, next) => {
-    if (req.header("content-type") === "application/json" && req.header("accept") === "application/json") {
+    if (req.method === 'GET' || (req.header("content-type") === "application/json"
+        && req.header("accept") === "application/json")) {
         return next();
     }
 
