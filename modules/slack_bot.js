@@ -25,22 +25,20 @@ rtm.on(RTM_EVENTS.MESSAGE, function handleRtmMessage(message) {
 
 rtm.start();
 
-String.prototype.isSimilarTo = function (patternString)
-{
+String.prototype.isSimilarTo = function (patternString) {
     patternString = patternString.replace(/\{[A-Za-z0-9_\-\.]+\}/g, '[A-Za-z0-9_\\-\\.\\s:]+');
 
     return this.match(patternString);
 };
 
-String.prototype.getPlaceholders = function (patternString)
-{
+String.prototype.getPlaceholders = function (patternString) {
     if (! this.isSimilarTo(patternString)) {
         return false;
     }
 
     let patterns = patternString.match(/\{[A-Za-z0-9_\-\.]+\}/g),
         params = [];
-    
+
     for (let i=0; i< patterns.length; i++) {
         let matching = patternString[patternString.indexOf(patterns[i]) + patterns[i].length],
             matchingstring = null,
@@ -65,12 +63,10 @@ String.prototype.getPlaceholders = function (patternString)
     return params;
 };
 
-function empty(item)
-{
+function empty(item) {
     return item === "" || item === null || item === undefined || item === false;
 }
 
-function log(...args)
-{
+function log(...args) {
     winston.log('info', '['+ date().format('YYYY-MM-DD H:mm:ss') + ']', ...args);
 }
