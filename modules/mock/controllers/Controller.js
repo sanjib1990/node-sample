@@ -41,9 +41,8 @@ export default class Controller
      * Get the response from response folder.
      *
      * @param fileName
-     * @param callback
      */
-    static getContentOf(fileName, callback) {
+    static getContentOf(fileName) {
         let content = require(config.response_dir_path + fileName);
 
         return content.default;

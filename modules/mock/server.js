@@ -1,5 +1,16 @@
 import {app} from "./app";
 import {router} from "./routes";
+import Logger from "./Utils/Logger";
+
+let logger = new Logger();
+
+// Middleware to be used by all view request
+app.use((req, res, next) => {
+    logger.log(req.method + ": " + req.url);
+    logger.log("[QUERY]", JSON.stringify(req.query));
+    logger.log("[BODY]", JSON.stringify(req.body));
+    next();
+});
 
 app.use(router);
 
@@ -10,5 +21,5 @@ let PORT    = process.env.PORT || 8080;
 let server  = app.listen(PORT, () => {
     let port    = server.address().port;
 
-    console.log("Server running at : http://localhost:%s", port);
+    logger.log("Server running at : http://localhost:" + port);
 });

@@ -6,7 +6,8 @@
   "scripts": {
     "server": "node_modules/.bin/babel-node ./bin/www",
     "migrate": "node_modules/.bin/sequelize db:migrate",
-    "test": "node_modules/.bin/mocha --compilers js:babel-core/register tests"
+    "test": "node_modules/.bin/mocha --compilers js:babel-core/register tests",
+    "mock": "node_modules/.bin/babel-node ./modules/mock/server.js"
   },
   "repository": {
     "type": "git",
