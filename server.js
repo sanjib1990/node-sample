@@ -13,7 +13,12 @@ import validator from "express-validator";
 import {helpers} from "./bootstrap/boot";
 
 // Load the env
-load();
+load({
+  allowEmptyValues: true
+});
+
+const Sentry = require('@sentry/node');
+Sentry.init({ dsn:  process.env.SENTRY_URL});
 
 // Initialize JSend Standard response.
 jsend.init();
@@ -212,6 +217,15 @@ router
             .catch(err => {
                 return apiErrorHandler(err, req, res);
             });
+    });
+
+router
+    .route("/*")
+    .get((req, res) => {
+        return res.jsend([], "Successfully Requested");
+    })
+    .post((req, res) => {
+         return res.jsend(req.body, "Successfully Requested");
     });
 
 /**
