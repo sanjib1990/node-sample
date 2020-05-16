@@ -11,7 +11,7 @@ let items = [426937,426893,426889,426886,426852,399859,399827,399824,399805,3998
 
 export default function() {
   const __id = items[Math.floor(Math.random()*items.length)];
-  let res = http.get(`https://nebula-master-stag-service.internal.staging.k8s.neontech.cloud:443/api/catalog/get_product/${__id}`);
+  let res = http.get(`https://nebula-master-stag-service.internal.staging.k8s.neontech.cloud:443/api/get_product/${__id}`);
   console.log(res.body);
   const __data = JSON.parse(res.body);
   check(res, {
@@ -20,5 +20,4 @@ export default function() {
     'data is not empty': r => Object.keys(__data.data).length > 5
     // 'transaction time OK': r => r.timings.duration < 600,
   });
-  sleep(1);
 }
