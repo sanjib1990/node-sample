@@ -13,6 +13,7 @@ export default function() {
   const __id = items[Math.floor(Math.random()*items.length)];
   let res = http.get(`https://nebula-master-stag-service.internal.staging.k8s.neontech.cloud:443/api/get_product/${__id}`);
   console.log(res.body);
+  // sleep(1);
   const __data = JSON.parse(res.body);
   check(res, {
     'status was 200': r => r.status === 200,

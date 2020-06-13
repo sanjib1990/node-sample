@@ -18,14 +18,14 @@ export default function() {
   for (let i=0; i< 10; i++) {
     __id.push(items[Math.floor(Math.random()*items.length)])
   }
-  console.log(JSON.stringify(__id))
-  let res = http.get(`https://spectre-stag-service.staging.k8s.neontech.cloud/api/elastic/in-ward/hsn/bulk`, JSON.stringify(__id), {
+  sleep(2);
+  let res = http.post(`https://spectre-stag-service.staging.k8s.neontech.cloud/api/elastic/in-ward/hsn/bulk`, JSON.stringify(__id), {
     "headers": {
       "Content-Type": "application/json"
     }
   });
-  console.log(res.body);
   const __data = JSON.parse(res.body);
+  console.log(JSON.stringify(__data));
   check(res, {
     'status was 200': r => r.status === 200,
     'data status was 200': r => __data.status === 200,

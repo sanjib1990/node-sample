@@ -16,8 +16,9 @@ let items = [
 export default function() {
   const __id = items[Math.floor(Math.random()*items.length)];
   let res = http.get(`https://spectre-stag-service.staging.k8s.neontech.cloud/api/elastic/in-ward?hsn=${__id}`);
-  console.log(res.body);
+  sleep(2);
   const __data = JSON.parse(res.body);
+  console.log(JSON.stringify(__data));
   check(res, {
     'status was 200': r => r.status === 200,
     'data status was 200': r => __data.status === 200,
