@@ -18,7 +18,7 @@ export default function() {
   for (let i=0; i< 10; i++) {
     __id.push(items[Math.floor(Math.random()*items.length)])
   }
-  sleep(2);
+  // sleep(2);
   let res = http.post(`https://spectre-stag-service.staging.k8s.neontech.cloud/api/elastic/in-ward/hsn/bulk`, JSON.stringify(__id), {
     "headers": {
       "Content-Type": "application/json"
