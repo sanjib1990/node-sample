@@ -12,13 +12,13 @@ let items = [426937,426893,426889,426886,426852,399859,399827,399824,399805,3998
 export default function() {
   const __id = items[Math.floor(Math.random()*items.length)];
   let res = http.get(`https://nebula-master-stag-service.internal.staging.k8s.neontech.cloud:443/api/get_product/${__id}`);
-  console.log(res.body);
   // sleep(1);
   const __data = JSON.parse(res.body);
+  console.log(__data.data.product.name);
   check(res, {
     'status was 200': r => r.status === 200,
     'data status was 200': r => __data.status === 200,
-    'data is not empty': r => Object.keys(__data.data).length > 5
-    // 'transaction time OK': r => r.timings.duration < 600,
+    'data is not empty': r => Object.keys(__data.data).length > 5,
+    'transaction time OK': r => r.timings.duration < 600,
   });
 }
