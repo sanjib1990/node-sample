@@ -1,5 +1,10 @@
 import http from 'k6/http';
 import { check, sleep } from 'k6';
+import { Trend, Counter, Rate } from 'k6/metrics';
+
+let myTrend = new Trend('waiting_time');
+let myCounter = new Counter('my_counter');
+let errorRate = new Rate('my_rate');
 
 export let options = {
   vus: 100,
@@ -11,10 +16,26 @@ let items = [426937,426893,426889,426886,426852,399859,399827,399824,399805,3998
 
 export default function() {
   const __id = items[Math.floor(Math.random()*items.length)];
-  let res = http.get(`https://nebula-master-stag-service.internal.staging.k8s.neontech.cloud:443/api/get_product/${__id}`);
-  // sleep(1);
-  const __data = JSON.parse(res.body);
-  console.log(__data.data.product.name);
+  let res = {}
+  let __data = {}
+  let startDate = new Date();
+  try {
+    res = http.get(`https://nebula-master-stag-service.internal.staging.k8s.neontech.cloud:443/api/get_product/${__id}`);
+    __data = JSON.parse(res.body);
+    // sleep(1);
+    console.log(res.timings.duration, __data.data.product.name);
+    errorRate.add(0)
+  } catch (e) {
+    let endDate   = new Date();
+    res.status = 500
+    __data.status = 500
+    __data.data = {response: []}
+    res.timings = {duration: (endDate.getTime() - startDate.getTime()) / 1000}
+    myCounter.add(1);
+    errorRate.add(1)
+    console.log("ERROR ====================> ", res.timings.duration, __data.data);
+  }
+  myTrend.add(res.timings.duration);
   check(res, {
     'status was 200': r => r.status === 200,
     'data status was 200': r => __data.status === 200,
